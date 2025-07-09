@@ -1,0 +1,253 @@
+{
+  "createdAt": "2025-06-28T01:36:45.468Z",
+  "updatedAt": "2025-06-28T04:42:46.640Z",
+  "id": "SQsenamj9Ihrl1UI",
+  "name": "Encerrar conversa do Bot",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b01e901-48fa-4362-a752-39956a134506",
+              "name": "body.meta.sender.identifier",
+              "value": "={{ $json.body.meta.sender.phone_number.replace('+', '') }}@s.whatsapp.net",
+              "type": "string"
+            },
+            {
+              "id": "84304cd6-9610-4154-8343-43af378569da",
+              "name": "body.inbox_id",
+              "value": "={{ $json.body.inbox_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3cd6c0b9-5fba-43fe-b289-32ec2079d24e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.inbox_id }}",
+                    "rightValue": 18,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "teste"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "74701327-7a22-43a6-bb5f-5a4302a5ad67",
+                    "leftValue": "={{ $json.body.inbox_id }}",
+                    "rightValue": null,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        360,
+        200
+      ],
+      "id": "c24b2556-66aa-4e6e-a704-fd33266af18b",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evoapi.whatx.com.br/typebot/changeStatus/VortexSolutions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "0BF0BC13C2FA-4C2A-AAC6-7030687DE1E9"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "remoteJid",
+              "value": "={{ $json.body.meta.sender.identifier }}"
+            },
+            {
+              "name": "status",
+              "value": "delete"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        0
+      ],
+      "id": "72d8f35a-2020-492d-87e7-e73dd96ea75d",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "EncerrarconversadoBotVortexSolutions",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "75923d2c-64c1-4e58-9984-5566dc664863",
+      "name": "Webhook",
+      "webhookId": "ca70e3fa-cd67-4cb8-a7fd-946cb3a6c2c7"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://chatwoot.whatx.com.br/api/v1/accounts/1/contacts/{{ $('Webhook').item.json.body.contact_inbox.contact_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "sB2RGTAdaJV2yhZx9PD1Yq28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"custom_attributes\": {\n        \"status_boot\":\"on\"\n    }\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "1a1e5730-c514-4ded-870d-59297ad1c2bd",
+      "name": "alterar statusbot"
+    }
+  ],
+  "connections": {
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "alterar statusbot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "3fae233e-d695-41c4-b35c-e0f959b94947",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2025-06-23T18:13:56.267Z",
+      "updatedAt": "2025-06-23T18:13:56.267Z",
+      "id": "3Zoi3f7ZIxpzG3fI",
+      "name": "Vortex"
+    },
+    {
+      "createdAt": "2025-06-28T04:42:40.778Z",
+      "updatedAt": "2025-06-28T04:42:40.778Z",
+      "id": "iNjo59n6TGdReOAR",
+      "name": "Typebot"
+    },
+    {
+      "createdAt": "2025-06-28T04:42:44.387Z",
+      "updatedAt": "2025-06-28T04:42:44.387Z",
+      "id": "yc9r2eEMG37qWNkY",
+      "name": "Chatwoot"
+    }
+  ]
+}
