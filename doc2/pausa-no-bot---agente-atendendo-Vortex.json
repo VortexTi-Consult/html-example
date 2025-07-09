@@ -1,0 +1,144 @@
+{
+  "createdAt": "2025-06-28T01:37:09.758Z",
+  "updatedAt": "2025-06-28T04:42:56.993Z",
+  "id": "301FRPAM7Bp1ZIPQ",
+  "name": "Pausa no Bot - Agente atendendo",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pausabotVortexSolutions",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -540,
+        20
+      ],
+      "id": "4008b083-2878-4e6c-8034-401c3b8b10bf",
+      "name": "Webhook",
+      "webhookId": "00f83c7c-d2f8-4ff7-b5df-e09749a81d4c"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "29300a73-bbc7-4a69-a127-755467520fec",
+              "leftValue": "={{ $json.body.messages[0].message_type }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        20
+      ],
+      "id": "301f017c-4cdd-4d04-b0ee-468d02a17742",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://chatwoot.whatx.com.br/api/v1/accounts/1/contacts/{{ $json.body.contact_inbox.contact_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "sB2RGTAdaJV2yhZx9PD1Yq28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "=json",
+        "specifyBody": "json",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "jsonBody": "={\n  \"custom_attributes\": {\"status_boot\":\"off\"}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "49f53fee-6e94-4b9e-98cf-1669814d8c91",
+      "name": "HTTP Request"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "fb79c98d-4012-44f9-a0fb-9a22e8277686",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2025-06-23T18:13:56.267Z",
+      "updatedAt": "2025-06-23T18:13:56.267Z",
+      "id": "3Zoi3f7ZIxpzG3fI",
+      "name": "Vortex"
+    },
+    {
+      "createdAt": "2025-06-28T04:42:40.778Z",
+      "updatedAt": "2025-06-28T04:42:40.778Z",
+      "id": "iNjo59n6TGdReOAR",
+      "name": "Typebot"
+    },
+    {
+      "createdAt": "2025-06-28T04:42:44.387Z",
+      "updatedAt": "2025-06-28T04:42:44.387Z",
+      "id": "yc9r2eEMG37qWNkY",
+      "name": "Chatwoot"
+    }
+  ]
+}
